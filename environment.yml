@@ -1,0 +1,8 @@
+name: advent
+channels:
+- conda-forge
+dependencies:
+        - python>3
+        - pandas        
+        - pytest        
+        - pip
