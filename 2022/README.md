@@ -8,4 +8,6 @@ https://github.com/mjloftus/advent-of-code-fortran
 
 https://gcc.gnu.org/onlinedocs/gfortran/Intrinsic-Procedures.html#Intrinsic-Procedures
 
+https://www.tutorialspoint.com/fortran/fortran_operators.htm
+
 `fpm run`

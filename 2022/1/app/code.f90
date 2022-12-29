@@ -10,38 +10,59 @@ program example_loadtxt
    implicit none
 
    real, allocatable       :: x(:, :)
-   real, dimension(0:10)   :: x_sub
+   real, dimension(0:40)   :: x_sub
+   real, dimension(1:2)    :: res
+   integer                 :: i
    integer                 :: j
+   integer, dimension(1)   :: k
    integer, dimension(1)   :: j_max
+   integer, dimension(0:1) :: test
    integer, dimension(0:1) :: gap_locs
    integer, dimension(1)   :: gap_loc
 
    call loadtxt('input_small', x)
-   !    print *, x
-   !    print *, sum(x)
-   ! print *, x(2,:)
 
-   ! get gap location
-   gap_locs = 0
+   ! initial calculation
+   i = 1
    gap_locs = findloc(x, 0)
    gap_loc = gap_locs(0)
-   print *, gap_loc
-   ! print *, gap_locs
-
-   ! print *, gap_loc - 1
    j_max = gap_loc-1
-   ! print *, j_max
-
-   do j=1, j_max(1)
-      ! print *, j
-      ! print *, x(j,1)
+   k(1) = 1
+   do j=k(1), j_max(1)
       x_sub(j) = x(j,1)
    enddo
+   res(i) = sum(x_sub, dim=1)
+   print *, res(i)
 
-   print *, sum(x_sub)
+
+   ! start iteration
+   ! do while (all(findloc(x,0) /= 0))
+   i = i + 1
+
+   k = gap_loc + 1
+   gap_locs = findloc(x(k(1):,1:), 0)
+   gap_loc = gap_locs(0)
+   j_max = k+gap_loc-2
+   do j=k(1), j_max(1)
+      x_sub(j) = x(j,1)
+   enddo
+   res(i) = sum(x_sub, dim=1)
+   ! print *, x_sub
+   print *, res
+
+
+   ! print *, k
+   ! print *, j_max(1)
+
+
+   ! ---
 
    ! print *, x
    ! print *, x(gap_loc-1,:)
    ! print *, sum(x(gap_loc-1,:))
+
+   ! k = gap_loc+1
+   ! print *, k
+   ! ! print *, x(k,1:)
 
 end program example_loadtxt
