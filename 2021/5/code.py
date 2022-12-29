@@ -1,8 +1,9 @@
 import pandas as pd
 import numpy as np
+from tqdm import tqdm
 
 lines = pd.read_table(
-    "2021/5/data_sample.csv", header=None, sep=" ", names=["one", "arrow", "two"]
+    "2021/5/data.csv", header=None, sep=" ", names=["one", "arrow", "two"]
 )[["one", "two"]]
 lines[["x_one", "y_one"]] = lines["one"].str.split(",", expand=True)
 lines[["x_two", "y_two"]] = lines["two"].str.split(",", expand=True)
@@ -10,17 +11,20 @@ lines[["x_two", "y_two"]] = lines["two"].str.split(",", expand=True)
 vertical = lines["x_one"] == lines["x_two"]
 horizontal = lines["y_one"] == lines["y_two"]
 lines = lines[horizontal | vertical][["x_one", "y_one", "x_two", "y_two"]]
+lines = lines.astype(int)
 
 # ---  make grid ---
 x_vals = np.array(lines[["x_one", "x_two"]])
 y_vals = np.array(lines[["y_one", "y_two"]])
-x_names = ["c" + str(x) for x in range(int(np.min(x_vals)), int(np.max(x_vals)) + 1)]
+x_names = ["c" + str(x) for x in range(0, int(np.max(x_vals)))]
+
 grid_rows = [
     pd.DataFrame(np.repeat(0, [int(np.max(x_vals)) + 1], axis=0).tolist())
-    for y in range(int(np.min(y_vals)), int(np.max(y_vals)) + 1)
+    for y in range(0, int(np.max(y_vals)) + 1)
 ]
 
 grid_raw = pd.concat(grid_rows, axis=1)
+grid_raw.shape  # TODO:  should be 991 x 990
 grid_raw.columns = x_names
 
 
@@ -54,9 +58,12 @@ def ends_to_line(x1, x2, y1, y2):
 
 
 grid = grid_raw.copy()
+# grid.shape
+# coords = (978, 237)
+# grid.iloc[coords[1], coords[0]] = -999 # y, x
 
-for i in range(0, lines.shape[0]):
-    # i = 1
+for i in tqdm(range(0, lines.shape[0])):
+    # i = 41
     # lines.iloc[i]
     line = ends_to_line(
         int(lines.iloc[i][0]),
@@ -67,9 +74,10 @@ for i in range(0, lines.shape[0]):
 
     # grid = grid_raw.copy()
     for coords in line:
+        print(coords)
         grid.iloc[coords[1], coords[0]] = grid.iloc[coords[1], coords[0]] + 1
 
     print(i)
-    print(grid)
+    # print(grid)
 
 len(np.where(np.array(grid) >= 2)[0])
